@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Memo;
+use App\Models\Tag;
+use App\Models\MemoTag;
+use DB;
 
 class HomeController extends Controller
 {
@@ -24,22 +27,58 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $memos = Memo::select('memos.*')
+        $memos =
+        Memo::select('memos.*')
         ->where('user_id', '=', \Auth::id())
         ->whereNull('deleted_at')
         ->orderBy('updated_at', 'DESC')
         ->get();
 
-        return view('create', compact('memos'));
+        $tags =
+        Tag::where('user_id', '=', \Auth::id())
+        ->whereNull('deleted_at')
+        ->orderBy('id', 'DESC')
+        ->get();
+
+        // dd($tags);
+
+        return view('create', compact('memos', 'tags'));
     }
 
     public function store(Request $request)
     {
         $posts = $request->all();
-        Memo::insert([
-            'content' =>  $posts['content'],
-            'user_id' => \Auth::id()
-        ]);
+
+        DB::transaction(function() use($posts) {
+            $memo_id = Memo::insertGetId([
+                'content' =>  $posts['content'],
+                'user_id' => \Auth::id()
+            ]);
+
+            $tag_exists =
+            Tag::where('user_id', '=', \Auth::id())
+            ->where('name', '=', $posts['new_tag'])
+            ->exists();
+
+            if(!empty($posts['new_tag']) && !$tag_exists) {
+                $tag_id = Tag::insertGetId([
+                    'user_id' => \Auth::id(),
+                    'name' => $posts['new_tag']
+                ]);
+                MemoTag::insert([
+                    'memo_id' => $memo_id,
+                    'tag_id' => $tag_id
+                ]);
+            }
+
+            if(!empty($posts['tags'][0])){
+                foreach($posts['tags'] as $tag){
+                    MemoTag::insert(['memo_id' => $memo_id, 'tag_id' => $tag]);
+                }
+            }
+
+        });
+
         return redirect(route('home'));
     }
 
