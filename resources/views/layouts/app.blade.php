@@ -92,12 +92,14 @@
                 <div class="col-md-4 p-0">
                     <div class="card">
                         <div class="card-header">
-                            中央カラム
+                            メモ一覧
                         </div>
                         <div class="card-body">
-                            <p class="card-text">
-                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque necessitatibus cumque fugiat? Excepturi, eum necessitatibus quas soluta adipisci dignissimos illum est. Autem dignissimos distinctio totam eaque voluptatem voluptatum animi ullam.
-                            </p>
+                            @foreach ($memos as $memo)
+                                <a href="/edit/{{$memo['id']}}" class="card-text d-block">
+                                    {{ $memo['content'] }}
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
