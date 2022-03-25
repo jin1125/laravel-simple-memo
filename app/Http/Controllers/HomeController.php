@@ -27,13 +27,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $memos =
-        Memo::select('memos.*')
-        ->where('user_id', '=', \Auth::id())
-        ->whereNull('deleted_at')
-        ->orderBy('updated_at', 'DESC')
-        ->get();
-
         $tags =
         Tag::where('user_id', '=', \Auth::id())
         ->whereNull('deleted_at')
@@ -42,7 +35,7 @@ class HomeController extends Controller
 
         // dd($tags);
 
-        return view('create', compact('memos', 'tags'));
+        return view('create', compact('tags'));
     }
 
     public function store(Request $request)
@@ -83,12 +76,6 @@ class HomeController extends Controller
 
     public function edit($id)
     {
-        $memos = Memo::select('memos.*')
-        ->where('user_id', '=', \Auth::id())
-        ->whereNull('deleted_at')
-        ->orderBy('updated_at', 'DESC')
-        ->get();
-
         $edit_memo = Memo::select('memos.*', 'tags.id AS tag_id')
         ->leftjoin('memo_tags', 'memo_tags.memo_id', '=', 'memos.id')
         ->leftjoin('tags', 'memo_tags.tag_id', '=', 'tags.id')
@@ -108,7 +95,7 @@ class HomeController extends Controller
         ->orderBy('id', 'DESC')
         ->get();
 
-        return view('edit', compact('memos', 'edit_memo', 'include_tags', 'tags'));
+        return view('edit', compact('edit_memo', 'include_tags', 'tags'));
     }
 
     public function update(Request $request)
