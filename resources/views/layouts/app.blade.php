@@ -80,12 +80,15 @@
                 <div class="col-md-2 p-0">
                     <div class="card">
                         <div class="card-header">
-                            左カラム
+                            タグ一覧
                         </div>
                         <div class="card-body">
-                            <p class="card-text">
-                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque necessitatibus cumque fugiat? Excepturi, eum necessitatibus quas soluta adipisci dignissimos illum est. Autem dignissimos distinctio totam eaque voluptatem voluptatum animi ullam.
-                            </p>
+                            <a href="/" class="card-text d-block">全て表示</a>
+                            @foreach ($tags as $tag)
+                                <a href="/?tag={{$tag['id']}}" class="card-text d-block">
+                                    {{ $tag['name'] }}
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
