@@ -15,6 +15,9 @@
                 placeholder="ここにメモを入力"
             ></textarea>
         </div>
+        @error('content')
+            <div class="alert alert-danger">メモ内容を入力してください</div>
+        @enderror
         @foreach($tags as $t)
             <div class="form-check form-check-inline mb-3">
                 <input
