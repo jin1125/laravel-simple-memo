@@ -5,7 +5,7 @@
     <div class="card-header">
         新規メモ作成
     </div>
-    <form class="card-body" action="{{ route('store') }}" method="post">
+    <form class="card-body my-card-body" action="{{ route('store') }}" method="post">
         @csrf
         <div class="form-group">
             <textarea
